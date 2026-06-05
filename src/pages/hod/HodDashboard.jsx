@@ -8,6 +8,7 @@ import StatCard from '../../components/common/StatCard';
 import CreateSubjectModal from '../../components/hod/CreateSubjectModal';
 import SubjectsTable from '../../components/hod/SubjectsTable';
 import FacultyTable from '../../components/hod/FacultyTable';
+import CreateStudentModal from '../../components/hod/CreateStudentModal';
 
 
 const TABS = [
@@ -18,6 +19,9 @@ const TABS = [
 
 const HodDashboard = () => {
     const { user } = useAuth();
+
+    const [showStudentModal, setShowStudentModal] = useState(false);
+
     const [activeTab, setActiveTab] = useState('subjects');
     const [subjects, setSubjects] = useState([]);
     const [subjectsLoading, setSubjectsLoading] = useState(true);
@@ -189,14 +193,19 @@ const HodDashboard = () => {
                         </div>
                         <h2 className="mb-2 text-xl font-bold text-gray-900">Student Management</h2>
                         <p className="mx-auto mb-6 max-w-md text-sm text-gray-500">
-                            Student account creation comes after faculty setup. Students need semester data so their doubt form shows the correct subjects.
+                            Create student accounts for your department. Students will be able to ask doubts for the selected semester.
                         </p>
-                        <button className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-6 py-3 text-sm font-semibold text-white opacity-60">
+
+                        <button
+                            onClick={() => setShowStudentModal(true)}
+                            className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-6 py-3 text-sm font-semibold text-white hover:bg-purple-700 transition"
+                        >
                             <Plus size={18} />
-                            Coming Next
+                            Create Student
                         </button>
                     </div>
                 )}
+
             </main>
 
             {showSubjectModal && (
@@ -205,8 +214,17 @@ const HodDashboard = () => {
                     onSuccess={fetchSubjects}
                 />
             )}
+
+            {showStudentModal && (
+                <CreateStudentModal
+                    onClose={() => setShowStudentModal(false)}
+                    onSuccess={() => { }}
+                    defaultSemester={user?.semester}
+                />
+            )}
         </div>
     );
 };
+
 
 export default HodDashboard;
