@@ -66,6 +66,7 @@ const StudentDashboard = () => {
                         <p className="text-sm text-gray-500">
                             Welcome back, {user?.name}. Search for existing answers or ask a new doubt.
                             {user?.semester && <span className="ml-1">Semester {user.semester}.</span>}
+                            <span className="ml-1">{user?.collegeName && `${user.collegeName}`}{user?.departmentName && ` - ${user.departmentName}`}.</span>
                         </p>
                     </div>
                     <button

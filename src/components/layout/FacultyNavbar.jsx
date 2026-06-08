@@ -21,6 +21,9 @@ const FacultyNavbar = () => {
                 <div className="hidden text-right sm:block">
                     <p className="text-sm font-semibold text-gray-800">{user?.name}</p>
                     <p className="text-xs text-gray-500">{user?.email}</p>
+                    {(user?.collegeName || user?.departmentName) && (
+                        <p className="text-xs text-gray-400">{user?.collegeName}{user?.collegeName && user?.departmentName ? ' - ' : ''}{user?.departmentName}</p>
+                    )}
                 </div>
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
                     {user?.name?.charAt(0).toUpperCase()}

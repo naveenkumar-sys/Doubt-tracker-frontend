@@ -106,6 +106,7 @@ const FacultyDashboard = () => {
                     <p className="text-sm text-gray-500">
                         Welcome, {user?.name}. View and answer doubts from students.
                         {user?.subjectIds?.length > 0 && <span className="ml-1">You are assigned to {user.subjectIds.length} subject(s).</span>}
+                        <span className="ml-1">{user?.collegeName && `${user.collegeName}`}{user?.departmentName && ` - ${user.departmentName}`}.</span>
                     </p>
                 </div>
 
