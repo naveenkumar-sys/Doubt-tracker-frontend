@@ -1,0 +1,40 @@
+import React from 'react';
+import { BookOpen, LogOut } from 'lucide-react';
+import { useAuth } from '../../context/authContext';
+
+const StudentNavbar = () => {
+    const { user, logout } = useAuth();
+
+    return (
+        <nav className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white px-4 py-4 shadow-sm sm:px-8">
+            <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-purple-800">
+                    <BookOpen size={18} className="text-white" />
+                </div>
+                <div>
+                    <span className="text-sm font-bold text-gray-900 sm:text-base">Doubt Tracker</span>
+                    <span className="ml-2 rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-700">{user?.role.toUpperCase()}</span>
+                </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+                <div className="hidden text-right sm:block">
+                    <p className="text-sm font-semibold text-gray-800">{user?.name}</p>
+                    <p className="text-xs text-gray-500">{user?.email}</p>
+                </div>
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-purple-600 text-sm font-bold text-white">
+                    {user?.name?.charAt(0).toUpperCase()}
+                </div>
+                <button
+                    onClick={logout}
+                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50"
+                >
+                    <LogOut size={16} />
+                    <span className="hidden sm:inline">Logout</span>
+                </button>
+            </div>
+        </nav>
+    );
+};
+
+export default StudentNavbar;
