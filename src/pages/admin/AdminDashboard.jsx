@@ -65,6 +65,9 @@ const AdminDashboard = () => {
         }
     }, []);
 
+    // deactivate all the department if the college is deactivated
+
+
     // Load both on mount
     useEffect(() => {
         fetchColleges();
@@ -75,9 +78,16 @@ const AdminDashboard = () => {
     const toggleCollegeStatus = async (college) => {
         setUpdatingCollegeId(college._id);
         try {
-            await api.put(`/colleges/updateCollegeStatus/${college._id}`, { isActive: !college.isActive });
-            toast.success(`College ${college.isActive ? 'deactivated' : 'activated'} successfully`);
+            await api.put(
+                `/colleges/updateCollegeStatus/${college._id}`,
+                { isActive: !college.isActive }
+            );
+
+            toast.success(
+                `College and departments updated successfully`
+            );
             fetchColleges();
+            fetchDepartments();
         } catch {
             toast.error('Failed to update college status');
         } finally {
@@ -131,11 +141,10 @@ const AdminDashboard = () => {
                         <button
                             key={tab.key}
                             onClick={() => setActiveTab(tab.key)}
-                            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all whitespace-nowrap ${
-                                activeTab === tab.key
+                            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all whitespace-nowrap ${activeTab === tab.key
                                     ? 'bg-white text-gray-900 shadow-sm'
                                     : 'text-gray-500 hover:text-gray-700'
-                            }`}
+                                }`}
                         >
                             <tab.icon size={16} />
                             {tab.label}
@@ -232,7 +241,7 @@ const AdminDashboard = () => {
                     onSuccess={fetchDepartments}
                 />
             )}
-            
+
             {showHodModal && (
                 <CreateHodModal
                     onClose={() => setShowHodModal(false)}

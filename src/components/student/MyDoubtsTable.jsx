@@ -5,7 +5,6 @@ const STATUS_FILTERS = [
     { key: 'pending', label: 'Pending' },
     { key: 'in_progress', label: 'In Progress' },
     { key: 'resolved', label: 'Resolved' },
-    { key: 'closed', label: 'Closed' },
 ];
 
 const STATUS_BADGES = {
@@ -56,11 +55,10 @@ const MyDoubtsTable = ({ doubts, loading, search, onSearchChange, statusFilter, 
                     <button
                         key={f.key}
                         onClick={() => onStatusFilterChange(f.key)}
-                        className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
-                            statusFilter === f.key
+                        className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${statusFilter === f.key
                                 ? 'bg-purple-600 text-white shadow-sm'
                                 : 'text-gray-500 hover:bg-gray-200 hover:text-gray-700'
-                        }`}
+                            }`}
                     >
                         {f.label}
                     </button>
@@ -118,21 +116,19 @@ const MyDoubtsTable = ({ doubts, loading, search, onSearchChange, statusFilter, 
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${badge.class}`}>
-                                                    <span className={`h-1.5 w-1.5 rounded-full ${
-                                                        doubt.status === 'pending' ? 'bg-yellow-500' :
-                                                        doubt.status === 'in_progress' ? 'bg-blue-500' :
-                                                        doubt.status === 'resolved' ? 'bg-green-500' :
-                                                        'bg-gray-500'
-                                                    }`}></span>
+                                                    <span className={`h-1.5 w-1.5 rounded-full ${doubt.status === 'pending' ? 'bg-yellow-500' :
+                                                            doubt.status === 'in_progress' ? 'bg-blue-500' :
+                                                                doubt.status === 'resolved' ? 'bg-green-500' :
+                                                                    'bg-gray-500'
+                                                        }`}></span>
                                                     {badge.label}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className={`text-xs font-semibold ${
-                                                    doubt.priority === 'high' ? 'text-red-600' :
-                                                    doubt.priority === 'low' ? 'text-gray-400' :
-                                                    'text-yellow-600'
-                                                }`}>
+                                                <span className={`text-xs font-semibold ${doubt.priority === 'high' ? 'text-red-600' :
+                                                        doubt.priority === 'low' ? 'text-gray-400' :
+                                                            'text-yellow-600'
+                                                    }`}>
                                                     {doubt.priority || 'medium'}
                                                 </span>
                                             </td>

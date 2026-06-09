@@ -9,6 +9,7 @@ import CreateSubjectModal from '../../components/hod/CreateSubjectModal';
 import SubjectsTable from '../../components/hod/SubjectsTable';
 import FacultyTable from '../../components/hod/FacultyTable';
 import CreateStudentModal from '../../components/hod/CreateStudentModal';
+import AssignFacultyModal from '../../components/hod/AssignFacultyModal';
 
 
 const TABS = [
@@ -39,11 +40,15 @@ const HodDashboard = () => {
     // Track which faculty is being updated (activated/deactivated) to disable the button and show loader 
     const [updatingId, setUpdatingId] = useState(null);
 
+    // Assign modal state
+    const [assignTargetSubject, setAssignTargetSubject] = useState(null);
+    const [assignTargetFaculty, setAssignTargetFaculty] = useState(null);
+
 
     // Fetch college details to get the college name for display in the header
     const fetchCollege = useCallback(async (collegeId) => {
         try {
-            const response = await api.get(`/colleges/getCollegeByid/${collegeId}`);
+            const response = await api.get(`/colleges/getCollegeById/${collegeId}`);
             setFetchCollegeName(response.data.data.college.name);
         }
         catch (error) {
@@ -76,6 +81,19 @@ const HodDashboard = () => {
 
 
 
+    // Fetch faculty for the HOD's department so dashboard stats are accurate on mount
+    const fetchFaculty = useCallback(async () => {
+        if (!user?.departmentId) return;
+        try {
+            const res = await api.get('/faculty/getFaculty');
+            setFaculty(res.data.data?.faculty || []);
+        } catch {
+            // Silently handle - FacultyTable will refetch when tab is active
+        } finally {
+            setLoading(false);
+        }
+    }, [user]);
+
     // Fetch department details to display the user's department name
     const fetchDepartment = useCallback(async (departmentId) => {
         try {
@@ -90,10 +108,11 @@ const HodDashboard = () => {
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchSubjects();
+        fetchFaculty();
         if (user?.departmentId) {
             fetchDepartment(user.departmentId);
         }
-    }, [fetchSubjects, user?.departmentId, fetchDepartment]);
+    }, [fetchSubjects, fetchFaculty, user?.departmentId, fetchDepartment]);
 
 
     // Toggle subject active/inactive status
@@ -134,10 +153,12 @@ const HodDashboard = () => {
                     </p>
                 </div>
 
-                <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
                     <StatCard icon={BookOpen} label="Total Subjects" value={subjects.length} color="bg-emerald-600" />
                     <StatCard icon={CheckCircle} label="Active Subjects" value={activeSubjectsCount} color="bg-green-500" />
                     <StatCard icon={XCircle} label="Inactive Subjects" value={subjects.length - activeSubjectsCount} color="bg-red-400" />
+                    <StatCard icon={Users} label="Total Faculty" value={faculty.length} color="bg-emerald-600" />
+                    <StatCard icon={CheckCircle} label="Active Faculty" value={activeFacultyCount} color="bg-green-500" />
                     <StatCard icon={XCircle} label="Inactive Faculty" value={faculty.length - activeFacultyCount} color="bg-red-400" />
                 </div>
 
@@ -163,7 +184,7 @@ const HodDashboard = () => {
                         onCreateClick={() => setShowSubjectModal(true)}
                         onToggleStatus={toggleSubjectStatus}
                         updatingId={updatingSubjectId}
-                        onAssignFaculty={() => { }}
+                        onAssignFaculty={(subject) => setAssignTargetSubject(subject)}
                     />
                 )}
 
@@ -182,6 +203,7 @@ const HodDashboard = () => {
                             setShowCreate={setShowCreate}
                             updatingId={updatingId}
                             setUpdatingId={setUpdatingId}
+                            onAssignToSubject={(f) => setAssignTargetFaculty(f)}
                         />
                     </div>
                 )}
@@ -220,6 +242,28 @@ const HodDashboard = () => {
                     onClose={() => setShowStudentModal(false)}
                     onSuccess={() => { }}
                     defaultSemester={user?.semester}
+                />
+            )}
+
+            {assignTargetSubject && (
+                <AssignFacultyModal
+                    subject={assignTargetSubject}
+                    onClose={() => setAssignTargetSubject(null)}
+                    onSuccess={() => {
+                        fetchSubjects();
+                        fetchFaculty();
+                    }}
+                />
+            )}
+
+            {assignTargetFaculty && (
+                <AssignFacultyModal
+                    faculty={assignTargetFaculty}
+                    onClose={() => setAssignTargetFaculty(null)}
+                    onSuccess={() => {
+                        fetchSubjects();
+                        fetchFaculty();
+                    }}
                 />
             )}
         </div>

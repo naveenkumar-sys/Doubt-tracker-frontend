@@ -1,11 +1,20 @@
 import React from 'react';
-import { GraduationCap, Loader2, Search, Plus, CheckCircle, XCircle, Building2 } from 'lucide-react';
+import { GraduationCap, Loader2, Search, Plus, CheckCircle, XCircle, Building2, AlertTriangle } from 'lucide-react';
 
 const DepartmentsTable = ({ departments, loading, search, onSearchChange, onCreateClick, onToggleStatus, updatingId, colleges }) => {
     const searchResults = departments.filter(d =>
         d.name.toLowerCase().includes(search.toLowerCase()) ||
         d.code.toLowerCase().includes(search.toLowerCase())
     );
+
+    // Helper function to get the status of the associated college for a department .
+    //  this function is used to determine whether the college associated with a department is active or not. It takes the collegeId as an argument, 
+    // which is used to finds the corresponding college from the colleges list, and returns its isActive status. This is important for determining whether certain actions (like activating a department) should be allowed based on the status of its parent college, ensuring data integrity and reflecting real-world relationships in the system.
+    const getCollegeStatus = (collegeId) => {
+        const college = colleges.find(c => c._id === collegeId);
+        return college ? college.isActive : false;
+    };
+
 
     return (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
@@ -95,10 +104,18 @@ const DepartmentsTable = ({ departments, loading, search, onSearchChange, onCrea
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${dept.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>
-                                            <span className={`w-1.5 h-1.5 rounded-full ${dept.isActive ? 'bg-green-500' : 'bg-red-500'}`}></span>
-                                            {dept.isActive ? 'Active' : 'Inactive'}
-                                        </span>
+                                        <div className="flex flex-col gap-1">
+                                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${dept.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>
+                                                <span className={`w-1.5 h-1.5 rounded-full ${dept.isActive ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                                                {dept.isActive ? 'Active' : 'Inactive'}
+                                            </span>
+                                            {!getCollegeStatus(dept.collegeId) && (
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-orange-100 text-orange-700">
+                                                    <AlertTriangle size={10} />
+                                                    College Inactive
+                                                </span>
+                                            )}
+                                        </div>
                                     </td>
 
 
@@ -108,7 +125,8 @@ const DepartmentsTable = ({ departments, loading, search, onSearchChange, onCrea
                                     <td className="px-6 py-4">
                                         <button
                                             onClick={() => onToggleStatus(dept)}
-                                            disabled={updatingId === dept._id}
+                                            disabled={updatingId === dept._id || (!dept.isActive && !getCollegeStatus(dept.collegeId))}
+                                            title={!dept.isActive && !getCollegeStatus(dept.collegeId) ? 'Cannot activate — college is inactive' : ''}
                                             className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 disabled:opacity-50 ${dept.isActive
                                                 ? 'bg-red-50 text-red-600 hover:bg-red-100'
                                                 : 'bg-green-50 text-green-700 hover:bg-green-100'

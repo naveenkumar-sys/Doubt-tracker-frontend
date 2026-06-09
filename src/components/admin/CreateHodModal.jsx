@@ -18,7 +18,7 @@ const CreateHodModal = ({ onClose, onSuccess }) => {
         name: '',
         email: '',
         password: '',
-        role: 'hod', // fixed — admin can only create HODs
+        role: 'hod', 
         collegeId: '',
         departmentId: '',
     });
@@ -71,7 +71,7 @@ const CreateHodModal = ({ onClose, onSuccess }) => {
     const validate = () => {
         const e = {};
         if (!form.name.trim()) e.name = 'Name is required';
-        else if (form.name.length < 2) e.name = 'Name must be at least 2 characters';
+        else if (form.name.length < 2) e.name = 'Name must be atleast 2 characters';
         if (!form.email.trim()) e.email = 'Email is required';
         else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Enter a valid email address';
         if (!form.password) e.password = 'Password is required';
@@ -85,7 +85,6 @@ const CreateHodModal = ({ onClose, onSuccess }) => {
         setErrors(e);
         return Object.keys(e).length === 0;
     };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!validate()) return;

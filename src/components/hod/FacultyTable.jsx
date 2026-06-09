@@ -114,6 +114,7 @@ const FacultyTable = ({
                                 <th className="px-6 py-3 text-left font-semibold">Name</th>
                                 <th className="px-6 py-3 text-left font-semibold">Email</th>
                                 <th className="px-6 py-3 text-left font-semibold">Status</th>
+                                <th className="px-6 py-3 text-left font-semibold">Subjects</th>
                                 <th className="px-6 py-3 text-left font-semibold">Action</th>
                                 <th className="px-6 py-3 text-left font-semibold">Assign</th>
                             </tr>
@@ -131,6 +132,22 @@ const FacultyTable = ({
                                             <span className={`h-1.5 w-1.5 rounded-full ${f.isActive ? 'bg-green-500' : 'bg-red-500'}`} />
                                             {f.isActive ? 'Active' : 'Inactive'}
                                         </span>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <div className="flex flex-wrap gap-1">
+                                            {f.subjectIds && f.subjectIds.length > 0 ? (
+                                                f.subjectIds.map((sub) => (
+                                                    <span
+                                                        key={sub._id || sub}
+                                                        className="inline-flex items-center rounded-md bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700"
+                                                    >
+                                                        {sub.name || sub.code || sub}
+                                                    </span>
+                                                ))
+                                            ) : (
+                                                <span className="text-xs text-gray-400">—</span>
+                                            )}
+                                        </div>
                                     </td>
                                     <td className="px-6 py-4">
                                         <button
