@@ -13,7 +13,7 @@ const AdminNavbar = () => {
                     <BookOpen size={18} className="text-white" />
                 </div>
                 <div>
-                    <span className="font-bold text-gray-900 text-sm sm:text-base">Doubt Tracker</span>
+                    <span className="font-bold text-gray-900 text-sm sm:text-base">ClarifyHub</span>
                     <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">{user?.role.toUpperCase()}</span>
                 </div>
             </div>

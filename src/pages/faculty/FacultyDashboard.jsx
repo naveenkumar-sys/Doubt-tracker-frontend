@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { HelpCircle, LayoutDashboard, Loader2, MessageSquare, Play, Search, TrendingUp } from 'lucide-react';
+import { HelpCircle, LayoutDashboard, Loader2, MessageSquare, Play, RefreshCw, Search, TrendingUp } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../api/axios';
 import { useAuth } from '../../context/authContext';
@@ -12,6 +12,7 @@ const STATUS_FILTERS = [
     { key: '', label: 'All' },
     { key: 'pending', label: 'Pending' },
     { key: 'in_progress', label: 'In Progress' },
+    { key: 'revision_requested', label: 'Revision Requested' },
     { key: 'resolved', label: 'Resolved' },
     { key: 'closed', label: 'Closed' },
 ];
@@ -19,6 +20,7 @@ const STATUS_FILTERS = [
 const STATUS_BADGES = {
     pending: { label: 'Pending', class: 'bg-yellow-100 text-yellow-700' },
     in_progress: { label: 'In Progress', class: 'bg-blue-100 text-blue-700' },
+    revision_requested: { label: 'Revision Requested', class: 'bg-orange-100 text-orange-700' },
     resolved: { label: 'Resolved', class: 'bg-green-100 text-green-700' },
     closed: { label: 'Closed', class: 'bg-gray-100 text-gray-600' },
 };
@@ -72,6 +74,7 @@ const FacultyDashboard = () => {
         total: pagination.total || doubts.length,
         pending: doubts.filter((d) => d.status === 'pending').length,
         inProgress: doubts.filter((d) => d.status === 'in_progress').length,
+        revisionRequested: doubts.filter((d) => d.status === 'revision_requested').length,
         resolved: doubts.filter((d) => d.status === 'resolved').length,
     };
 
@@ -114,6 +117,7 @@ const FacultyDashboard = () => {
                     <StatCard icon={HelpCircle} label="Total Doubts" value={stats.total} color="bg-blue-600" />
                     <StatCard icon={TrendingUp} label="Pending" value={stats.pending} color="bg-yellow-500" />
                     <StatCard icon={Loader2} label="In Progress" value={stats.inProgress} color="bg-indigo-500" />
+                    <StatCard icon={RefreshCw} label="Revision" value={stats.revisionRequested} color="bg-orange-500" />
                     <StatCard icon={MessageSquare} label="Resolved" value={stats.resolved} color="bg-green-500" />
                 </div>
 
@@ -194,10 +198,11 @@ const FacultyDashboard = () => {
                                                         </span>
                                                     </td>
                                                     <td className="px-6 py-4">
-                                                        <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${badge.class}`}>
+                                                            <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${badge.class}`}>
                                                             <span className={`h-1.5 w-1.5 rounded-full ${
                                                                 doubt.status === 'pending' ? 'bg-yellow-500' :
                                                                 doubt.status === 'in_progress' ? 'bg-blue-500' :
+                                                                doubt.status === 'revision_requested' ? 'bg-orange-500' :
                                                                 doubt.status === 'resolved' ? 'bg-green-500' :
                                                                 'bg-gray-500'
                                                             }`}></span>
@@ -225,7 +230,7 @@ const FacultyDashboard = () => {
                                                                     Take
                                                                 </button>
                                                             )}
-                                                            {doubt.status === 'in_progress' && (
+                                                            {(doubt.status === 'in_progress' || doubt.status === 'revision_requested') && (
                                                                 <button
                                                                     onClick={() => handleAnswerClick(doubt._id, doubt.title)}
                                                                     className="rounded-lg bg-blue-100 px-3 py-1.5 text-xs font-semibold text-blue-700 transition hover:bg-blue-200"

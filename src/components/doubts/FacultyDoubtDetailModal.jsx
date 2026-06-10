@@ -7,6 +7,7 @@ import { useAuth } from '../../context/authContext';
 const STATUS_BADGES = {
     pending: { label: 'Pending', class: 'bg-yellow-100 text-yellow-700' },
     in_progress: { label: 'In Progress', class: 'bg-blue-100 text-blue-700' },
+    revision_requested: { label: 'Revision Requested', class: 'bg-orange-100 text-orange-700' },
     resolved: { label: 'Resolved', class: 'bg-green-100 text-green-700' },
     closed: { label: 'Closed', class: 'bg-gray-100 text-gray-600' },
 };
@@ -81,7 +82,7 @@ const FacultyDoubtDetailModal = ({ doubtId, onClose, onAnswer }) => {
     }
 
     const badge = STATUS_BADGES[doubt.status] || STATUS_BADGES.pending;
-    const isAssignedToMe = doubt.assignedFacultyId?._id === user?._id || doubt.assignedFacultyId === user?._id;
+    const isAssignedToMe = doubt.assignedFacultyId?._id === user?.id || doubt.assignedFacultyId === user?.id;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
@@ -151,7 +152,17 @@ const FacultyDoubtDetailModal = ({ doubtId, onClose, onAnswer }) => {
                         </div>
                     )}
 
-                    {doubt.status === 'in_progress' && isAssignedToMe && (
+                    {doubt.status === 'revision_requested' && doubt.resubmitReason && (
+                        <div className="rounded-xl border border-orange-200 bg-orange-50 p-4">
+                            <p className="mb-1 text-xs font-semibold text-orange-700">Student requested revision</p>
+                            <p className="text-sm text-orange-800">{doubt.resubmitReason}</p>
+                            {doubt.resubmitCount > 0 && (
+                                <p className="mt-1 text-xs text-orange-500">Resubmitted {doubt.resubmitCount} time(s)</p>
+                            )}
+                        </div>
+                    )}
+
+                    {(doubt.status === 'in_progress' && isAssignedToMe) || doubt.status === 'revision_requested' ? (
                         <div className="flex justify-end">
                             <button
                                 onClick={() => { onClose(); onAnswer(doubt._id, doubt.title); }}
@@ -161,7 +172,7 @@ const FacultyDoubtDetailModal = ({ doubtId, onClose, onAnswer }) => {
                                 Answer This Doubt
                             </button>
                         </div>
-                    )}
+                    ) : null}
 
                     <div>
                         <div className="mb-4 flex items-center gap-2">

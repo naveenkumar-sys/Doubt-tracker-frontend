@@ -12,7 +12,7 @@ const FacultyNavbar = () => {
                     <BookOpen size={18} className="text-white" />
                 </div>
                 <div>
-                    <span className="text-sm font-bold text-gray-900 sm:text-base">Doubt Tracker</span>
+                    <span className="text-sm font-bold text-gray-900 sm:text-base">ClarifyHub</span>
                     <span className="ml-2 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">{user?.role.toUpperCase()}</span>
                 </div>
             </div>

@@ -2,10 +2,12 @@ import { useState, useCallback, useEffect } from 'react';
 import { HelpCircle, Loader2, MessageSquare, Search, User } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../api/axios';
+import SuggestionBar from '../common/SuggestionBar';
 
 const STATUS_BADGES = {
     pending: { label: 'Pending', class: 'bg-yellow-100 text-yellow-700' },
     in_progress: { label: 'In Progress', class: 'bg-blue-100 text-blue-700' },
+    revision_requested: { label: 'Revision Requested', class: 'bg-orange-100 text-orange-700' },
     resolved: { label: 'Resolved', class: 'bg-green-100 text-green-700' },
     closed: { label: 'Closed', class: 'bg-gray-100 text-gray-600' },
 };
@@ -15,6 +17,7 @@ const BrowseDoubts = ({ onViewDoubt, onAskDoubt }) => {
     const [doubts, setDoubts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searched, setSearched] = useState(false);
+    const [suggestion, setSuggestion] = useState(null);
     const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
     const [page, setPage] = useState(1);
 
@@ -23,12 +26,14 @@ const BrowseDoubts = ({ onViewDoubt, onAskDoubt }) => {
         if (!q.trim()) return;
         setLoading(true);
         setSearched(true);
+        setSuggestion(null);
         try {
             const params = { search: q.trim(), page: pageNum, limit: 10 };
             const res = await api.get('/doubts/getDoubts', { params });
             const data = res.data.data;
             setDoubts(data?.doubts || []);
             if (data?.pagination) setPagination(data.pagination);
+            if (data?.suggestion) setSuggestion(data.suggestion);
         } catch (error) {
             toast.error(error.response?.data?.message || 'Search failed');
         } finally {
@@ -62,6 +67,13 @@ const BrowseDoubts = ({ onViewDoubt, onAskDoubt }) => {
     const handlePageChange = (newPage) => {
         setPage(newPage);
         fetchDoubts(searchQuery, newPage);
+    };
+
+    const handleSearchCorrected = (correctedTerm) => {
+        setSearchQuery(correctedTerm);
+        setSuggestion(null);
+        setPage(1);
+        fetchDoubts(correctedTerm, 1);
     };
 
     return (
@@ -102,6 +114,13 @@ const BrowseDoubts = ({ onViewDoubt, onAskDoubt }) => {
                             <Loader2 size={28} className="mr-3 animate-spin" /> Searching...
                         </div>
                     ) : doubts.length === 0 ? (
+                        <div className="space-y-4">
+                            {suggestion && (
+                                <SuggestionBar
+                                    suggestion={suggestion}
+                                    onSearchCorrected={handleSearchCorrected}
+                                />
+                            )}
                         <div className="rounded-2xl border border-gray-100 bg-white p-12 text-center shadow-sm">
                             <HelpCircle size={48} className="mx-auto mb-4 text-gray-300" />
                             <h3 className="text-lg font-bold text-gray-900">No doubts found</h3>
@@ -114,6 +133,7 @@ const BrowseDoubts = ({ onViewDoubt, onAskDoubt }) => {
                             >
                                 Ask Your Doubt
                             </button>
+                        </div>
                         </div>
                     ) : (
                         <>

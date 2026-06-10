@@ -10,8 +10,8 @@ import MyDoubtsTable from '../../components/student/MyDoubtsTable';
 import DoubtDetailModal from '../../components/student/DoubtDetailModal';
 
 const TABS = [
-    { key: 'browse', label: 'Browse Doubts', icon: Search },
-    { key: 'myDoubts', label: 'My Doubts', icon: HelpCircle },
+    { key: 'browse', label: 'Browse Queries', icon: Search },
+    { key: 'myDoubts', label: 'My Queries', icon: HelpCircle },
 ];
 
 const StudentDashboard = () => {
@@ -30,7 +30,7 @@ const StudentDashboard = () => {
     const fetchMyDoubts = useCallback(async (page = 1) => {
         setMyDoubtsLoading(true);
         try {
-            const params = { page, limit: 10, studentId: user?._id };
+            const params = { page, limit: 10, studentId: user?.id };
             if (myDoubtsStatus) params.status = myDoubtsStatus;
 
             const res = await api.get('/doubts/getDoubts', { params });
@@ -64,17 +64,17 @@ const StudentDashboard = () => {
                             <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Student Dashboard</h1>
                         </div>
                         <p className="text-sm text-gray-500">
-                            Welcome back, {user?.name}. Search for existing answers or ask a new doubt.
+                            Welcome back, {user?.name}. Search for existing answers or ask a new Qestion.
                             {user?.semester && <span className="ml-1">Semester {user.semester}.</span>}
                             <span className="ml-1">{user?.collegeName && `${user.collegeName}`}{user?.departmentName && ` - ${user.departmentName}`}.</span>
                         </p>
                     </div>
                     <button
                         onClick={() => setShowAskModal(true)}
-                        className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-purple-700"
+                        className="inline-flex items-center  rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-purple-700"
                     >
                         <Plus size={18} />
-                        Ask a Doubt
+                        Ask a Queries
                     </button>
                 </div>
 

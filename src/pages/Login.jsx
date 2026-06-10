@@ -67,7 +67,7 @@ const Login = () => {
                     {/* Content */}
                     <div className="relative z-10">
                         <h1 className="text-5xl font-bold tracking-wider mb-2">WELCOME</h1>
-                        <h2 className="text-xl font-semibold tracking-widest text-blue-100 mb-6 uppercase">TO DOUBT TRACKER</h2>
+                        <h2 className="text-xl font-semibold tracking-widest text-blue-100 mb-6 uppercase">TO ClarifyHub</h2>
                         <p className="text-sm text-blue-100 leading-relaxed max-w-sm">
                             Your centralized platform for resolving academic questions and bridging the gap between students and faculty. Log in to access your personalized dashboard.
                         </p>
