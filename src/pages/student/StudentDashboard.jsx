@@ -11,7 +11,7 @@ import DoubtDetailModal from '../../components/student/DoubtDetailModal';
 
 const TABS = [
     { key: 'browse', label: 'Browse Queries', icon: Search },
-    { key: 'myDoubts', label: 'My Queries', icon: HelpCircle },
+    { key: 'myDoubts', label: 'My Queries   ', icon: HelpCircle },
 ];
 
 const StudentDashboard = () => {
